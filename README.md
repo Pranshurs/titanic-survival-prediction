@@ -1,4 +1,5 @@
-#Titanic Survival Prediction Project
+# Titanic Survival Prediction Project
+
 This project aims to predict the survival of passengers on the Titanic using machine learning. It follows a structured, beginner-friendly approach to introduce concepts from MLOps and DataOps.
 
 Project Structure
