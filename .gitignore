@@ -1,0 +1,25 @@
+Ignore Python virtual environments
+venv/
+*.venv/
+env/
+.env
+
+Ignore Python cache files
+pycache/
+*.pyc
+*.pyo
+*.pyd
+
+Ignore IDE and editor folders
+.vscode/
+.idea/
+
+Ignore data files - we don't want to commit large data files to Git
+data/raw/
+data/processed/
+
+Ignore model files
+models/
+
+Ignore notebooks checkpoints
+.ipynb_checkpoints/
