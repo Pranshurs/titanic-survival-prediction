@@ -1,0 +1,11 @@
+data:
+  train_path: "titanic_survival/data/train.csv"
+  test_path: "titanic_survival/data/test.csv"
+
+model:
+  type: "logistic_regression"  # can change to random_forest later
+  output_path: "titanic_survival/models/model.pkl"
+
+training:
+  test_size: 0.2
+  random_state: 42
