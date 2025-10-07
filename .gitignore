@@ -1,25 +1,22 @@
-Ignore Python virtual environments
-venv/
-*.venv/
-env/
-.env
-
-Ignore Python cache files
-pycache/
+# Python
+__pycache__/
 *.pyc
 *.pyo
 *.pyd
+env/
+venv/
+*.env
 
-Ignore IDE and editor folders
+# Jupyter
+.ipynb_checkpoints
+
+# VSCode
 .vscode/
-.idea/
 
-Ignore data files - we don't want to commit large data files to Git
-data/raw/
-data/processed/
+# Data
+titanic_survival/data/
+titanic_survival/models/*.pkl
+titanic_survival/models/submission.csv
 
-Ignore model files
-models/
-
-Ignore notebooks checkpoints
-.ipynb_checkpoints/
+# Docker
+*.log
