@@ -58,7 +58,7 @@ def calibration_table(y: np.ndarray, p: np.ndarray, bins: int) -> list[dict[str,
     frame = pd.DataFrame({"y": y, "p": p, "bin": q})
     rows = []
     for interval, g in frame.groupby("bin", observed=True):
-        rows.append({"bin": str(interval), "n": int(len(g)), "mean_predicted": float(g["p"].mean()),
+        rows.append({"bin": f"({interval.left:.3f}, {interval.right:.3f}]", "n": int(len(g)), "mean_predicted": float(g["p"].mean()),
                      "observed_rate": float(g["y"].mean())})
     return rows
 
