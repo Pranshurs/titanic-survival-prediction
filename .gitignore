@@ -9,3 +9,4 @@ titanic_survival/models/submission.csv
 data/titanic/*.csv
 artifacts/
 *.egg-info/
+.runs/

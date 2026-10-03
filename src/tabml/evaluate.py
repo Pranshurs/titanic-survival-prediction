@@ -79,6 +79,7 @@ def slices(X: pd.DataFrame, y: np.ndarray, p: np.ndarray, threshold: float,
             rows.append({
                 "value": value, "n": int(m.sum()), "small_sample": bool(m.sum() < min_n),
                 "observed_positive_rate": float(yy.mean()), "predicted_positive_rate": float(dd.mean()),
+                "mean_probability": float(pp.mean()),
                 "accuracy": float((dd == yy).mean()),
                 "recall": float(dd[yy == 1].mean()) if (yy == 1).any() else None,
                 "precision": float(yy[dd == 1].mean()) if (dd == 1).any() else None,
