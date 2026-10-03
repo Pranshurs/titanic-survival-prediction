@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tabml"
+version = "1.0.0"
+description = "A reproducible reference pipeline for tabular binary classification, with Titanic as the worked example."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = [
+  "scikit-learn>=1.6",
+  "pandas>=2.2",
+  "numpy>=1.26",
+  "pydantic>=2.6",
+  "pyyaml>=6.0",
+  "joblib>=1.3",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff==0.8.6"]
+
+[project.scripts]
+tabml = "tabml.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-m 'not titanic'"
+markers = ["titanic: needs the Kaggle Titanic CSV in data/titanic/ (not in CI)"]

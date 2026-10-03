@@ -1,5 +1,7 @@
-pandas
-numpy
-scikit-learn
-pyyaml
-joblib
+# Exact versions used for the committed Titanic report (see reports/titanic/).
+scikit-learn==1.9.1
+pandas==3.0.6
+numpy==2.5.3
+pydantic==2.13.5
+pyyaml==6.0.3
+joblib==1.5.3
