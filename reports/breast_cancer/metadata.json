@@ -1,0 +1,616 @@
+{
+  "run_id": "20261003T195048Z-352b7995",
+  "tabml_version": "1.0.0",
+  "config": {
+    "name": "breast_cancer",
+    "data": {
+      "source": "sklearn",
+      "path": null,
+      "dataset": "breast_cancer",
+      "sha256": null,
+      "target": "target",
+      "positive_label": 0,
+      "id_column": null
+    },
+    "features": {
+      "engineered": [],
+      "numeric": [
+        "mean radius",
+        "mean texture",
+        "mean perimeter",
+        "mean area",
+        "mean smoothness",
+        "mean compactness",
+        "mean concavity",
+        "mean concave points",
+        "mean symmetry",
+        "mean fractal dimension",
+        "worst radius",
+        "worst texture",
+        "worst perimeter",
+        "worst area",
+        "worst smoothness",
+        "worst compactness",
+        "worst concavity",
+        "worst concave points",
+        "worst symmetry",
+        "worst fractal dimension"
+      ],
+      "categorical": []
+    },
+    "split": {
+      "test_size": 0.2,
+      "seed": 7
+    },
+    "cv": {
+      "outer_folds": 5,
+      "inner_folds": 3,
+      "seed": 7
+    },
+    "selection_metric": "roc_auc",
+    "models": {
+      "baseline_majority": {
+        "grid": {}
+      },
+      "logistic_regression": {
+        "grid": {
+          "C": [
+            0.1,
+            1.0,
+            10.0
+          ]
+        }
+      },
+      "random_forest": {
+        "grid": {
+          "n_estimators": [
+            200
+          ],
+          "max_depth": [
+            4,
+            null
+          ]
+        }
+      },
+      "hist_gradient_boosting": {
+        "grid": {
+          "learning_rate": [
+            0.1
+          ],
+          "max_depth": [
+            3,
+            null
+          ]
+        }
+      }
+    },
+    "evaluation": {
+      "threshold": 0.5,
+      "bootstrap": 1000,
+      "calibration_bins": 10,
+      "slices": {},
+      "min_slice_n": 30
+    },
+    "n_jobs": 1
+  },
+  "config_sha256": "352b79955cb056ef52b3c2e310ae2c20da57e9c7b1f0ffea7a4c8548a7119bf7",
+  "code_commit": "dc9ca8aa4b5cc0aa732921446b76e3f6a616e094",
+  "data": {
+    "source": "sklearn:breast_cancer",
+    "sha256": null,
+    "rows": 569,
+    "positive_rate": 0.37258347978910367
+  },
+  "split": {
+    "train_rows": 455,
+    "test_rows": 114,
+    "train_indices_sha256": "32199536f20dd79486894cfa0b8d350b713b0d433ce65910cbe3a28d3500520a",
+    "test_indices_sha256": "719bb0e222d8f604a0e7c79d535cc4d11464b40660ce596acb52c8c6658de65e"
+  },
+  "input_columns": [
+    "mean area",
+    "mean compactness",
+    "mean concave points",
+    "mean concavity",
+    "mean fractal dimension",
+    "mean perimeter",
+    "mean radius",
+    "mean smoothness",
+    "mean symmetry",
+    "mean texture",
+    "worst area",
+    "worst compactness",
+    "worst concave points",
+    "worst concavity",
+    "worst fractal dimension",
+    "worst perimeter",
+    "worst radius",
+    "worst smoothness",
+    "worst symmetry",
+    "worst texture"
+  ],
+  "id_column": null,
+  "comparison": {
+    "baseline_majority": {
+      "folds": {
+        "accuracy": [
+          0.6263736263736264,
+          0.6263736263736264,
+          0.6263736263736264,
+          0.6263736263736264,
+          0.6263736263736264
+        ],
+        "precision": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "recall": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "f1": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "roc_auc": [
+          0.5,
+          0.5,
+          0.5,
+          0.5,
+          0.5
+        ],
+        "neg_brier_score": [
+          -0.37362637362637363,
+          -0.37362637362637363,
+          -0.37362637362637363,
+          -0.37362637362637363,
+          -0.37362637362637363
+        ],
+        "neg_log_loss": [
+          -13.466859508021793,
+          -13.466859508021791,
+          -13.466859508021797,
+          -13.466859508021797,
+          -13.466859508021793
+        ]
+      },
+      "mean": {
+        "accuracy": 0.6263736263736264,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "roc_auc": 0.5,
+        "neg_brier_score": -0.37362637362637363,
+        "neg_log_loss": -13.466859508021795
+      },
+      "std": {
+        "accuracy": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "roc_auc": 0.0,
+        "neg_brier_score": 0.0,
+        "neg_log_loss": 2.5121479338940403e-15
+      },
+      "chosen_params_per_fold": [
+        {},
+        {},
+        {},
+        {},
+        {}
+      ],
+      "seconds": 0.13
+    },
+    "logistic_regression": {
+      "folds": {
+        "accuracy": [
+          1.0,
+          0.9230769230769231,
+          1.0,
+          0.978021978021978,
+          0.978021978021978
+        ],
+        "precision": [
+          1.0,
+          0.8857142857142857,
+          1.0,
+          0.9705882352941176,
+          1.0
+        ],
+        "recall": [
+          1.0,
+          0.9117647058823529,
+          1.0,
+          0.9705882352941176,
+          0.9411764705882353
+        ],
+        "f1": [
+          1.0,
+          0.8985507246376812,
+          1.0,
+          0.9705882352941176,
+          0.9696969696969697
+        ],
+        "roc_auc": [
+          1.0,
+          0.9716202270381837,
+          1.0,
+          0.9979360165118679,
+          0.9989680082559339
+        ],
+        "neg_brier_score": [
+          -0.00826624926106255,
+          -0.05558460740139641,
+          -0.010703529597467242,
+          -0.017741847657670028,
+          -0.01846075579860018
+        ],
+        "neg_log_loss": [
+          -0.04159450682887606,
+          -0.2826595903036896,
+          -0.06086039589519736,
+          -0.0666049386839691,
+          -0.06449232742873924
+        ]
+      },
+      "mean": {
+        "accuracy": 0.9758241758241759,
+        "precision": 0.9712605042016808,
+        "recall": 0.9647058823529411,
+        "f1": 0.9677671859257536,
+        "roc_auc": 0.993704850361197,
+        "neg_brier_score": -0.02215139794323928,
+        "neg_log_loss": -0.10324235182809427
+      },
+      "std": {
+        "accuracy": 0.031467738600607344,
+        "precision": 0.04948859287553557,
+        "recall": 0.03834824944236853,
+        "f1": 0.0414744183337015,
+        "roc_auc": 0.0123752980094293,
+        "neg_brier_score": 0.01920088221555224,
+        "neg_log_loss": 0.10078578381497837
+      },
+      "chosen_params_per_fold": [
+        {
+          "C": 1.0
+        },
+        {
+          "C": 10.0
+        },
+        {
+          "C": 0.1
+        },
+        {
+          "C": 1.0
+        },
+        {
+          "C": 1.0
+        }
+      ],
+      "seconds": 0.37
+    },
+    "random_forest": {
+      "folds": {
+        "accuracy": [
+          0.989010989010989,
+          0.9340659340659341,
+          0.989010989010989,
+          0.978021978021978,
+          0.9560439560439561
+        ],
+        "precision": [
+          0.9714285714285714,
+          0.8888888888888888,
+          0.9714285714285714,
+          1.0,
+          0.96875
+        ],
+        "recall": [
+          1.0,
+          0.9411764705882353,
+          1.0,
+          0.9411764705882353,
+          0.9117647058823529
+        ],
+        "f1": [
+          0.9855072463768116,
+          0.9142857142857143,
+          0.9855072463768116,
+          0.9696969696969697,
+          0.9393939393939394
+        ],
+        "roc_auc": [
+          0.9994840041279669,
+          0.9690402476780186,
+          0.998968008255934,
+          0.9963880288957689,
+          0.9979360165118679
+        ],
+        "neg_brier_score": [
+          -0.01633846153846154,
+          -0.05585365415102726,
+          -0.012900549450549454,
+          -0.02166047054658336,
+          -0.02502774725274725
+        ],
+        "neg_log_loss": [
+          -0.06769643765334543,
+          -0.22169819688316306,
+          -0.055394549574670375,
+          -0.08190229219776567,
+          -0.09047592719658662
+        ]
+      },
+      "mean": {
+        "accuracy": 0.9692307692307693,
+        "precision": 0.9600992063492064,
+        "recall": 0.9588235294117649,
+        "f1": 0.9588782232260493,
+        "roc_auc": 0.9923632610939113,
+        "neg_brier_score": -0.026356176587873776,
+        "neg_log_loss": -0.10343348070110622
+      },
+      "std": {
+        "accuracy": 0.023823608119427256,
+        "precision": 0.04181664711497713,
+        "recall": 0.03946002313234924,
+        "f1": 0.03123853466943434,
+        "roc_auc": 0.013091456947533059,
+        "neg_brier_score": 0.01714149992549732,
+        "neg_log_loss": 0.0674590774365824
+      },
+      "chosen_params_per_fold": [
+        {
+          "max_depth": null,
+          "n_estimators": 200
+        },
+        {
+          "max_depth": 4,
+          "n_estimators": 200
+        },
+        {
+          "max_depth": null,
+          "n_estimators": 200
+        },
+        {
+          "max_depth": 4,
+          "n_estimators": 200
+        },
+        {
+          "max_depth": null,
+          "n_estimators": 200
+        }
+      ],
+      "seconds": 4.37
+    },
+    "hist_gradient_boosting": {
+      "folds": {
+        "accuracy": [
+          0.9560439560439561,
+          0.9230769230769231,
+          1.0,
+          0.978021978021978,
+          0.967032967032967
+        ],
+        "precision": [
+          0.9166666666666666,
+          0.8857142857142857,
+          1.0,
+          0.9705882352941176,
+          1.0
+        ],
+        "recall": [
+          0.9705882352941176,
+          0.9117647058823529,
+          1.0,
+          0.9705882352941176,
+          0.9117647058823529
+        ],
+        "f1": [
+          0.9428571428571428,
+          0.8985507246376812,
+          1.0,
+          0.9705882352941176,
+          0.9538461538461539
+        ],
+        "roc_auc": [
+          0.9979360165118679,
+          0.9659442724458204,
+          1.0,
+          0.9974200206398349,
+          0.9984520123839009
+        ],
+        "neg_brier_score": [
+          -0.020281316678282077,
+          -0.0576053624052506,
+          -0.0021125159717761124,
+          -0.01867650459325713,
+          -0.030841194367696976
+        ],
+        "neg_log_loss": [
+          -0.056798684125421633,
+          -0.3821691559392874,
+          -0.010522521838736467,
+          -0.07160014328980117,
+          -0.09858868897462711
+        ]
+      },
+      "mean": {
+        "accuracy": 0.9648351648351647,
+        "precision": 0.954593837535014,
+        "recall": 0.9529411764705882,
+        "f1": 0.9531684513270191,
+        "roc_auc": 0.9919504643962849,
+        "neg_brier_score": -0.02590337880325258,
+        "neg_log_loss": -0.12393583883357476
+      },
+      "std": {
+        "accuracy": 0.028444349682515985,
+        "precision": 0.05138609463748691,
+        "recall": 0.03946002313234924,
+        "f1": 0.037371517417502484,
+        "roc_auc": 0.014569918059694726,
+        "neg_brier_score": 0.02048925471131194,
+        "neg_log_loss": 0.14784783318628666
+      },
+      "chosen_params_per_fold": [
+        {
+          "learning_rate": 0.1,
+          "max_depth": null
+        },
+        {
+          "learning_rate": 0.1,
+          "max_depth": null
+        },
+        {
+          "learning_rate": 0.1,
+          "max_depth": null
+        },
+        {
+          "learning_rate": 0.1,
+          "max_depth": null
+        },
+        {
+          "learning_rate": 0.1,
+          "max_depth": 3
+        }
+      ],
+      "seconds": 21.32
+    }
+  },
+  "selected_model": "logistic_regression",
+  "selected_params": {
+    "C": 10.0
+  },
+  "test": {
+    "n": 114,
+    "positive_rate": 0.3684210526315789,
+    "threshold": 0.5,
+    "metrics": {
+      "accuracy": 0.9736842105263158,
+      "precision": 1.0,
+      "recall": 0.9285714285714286,
+      "f1": 0.9629629629629629,
+      "roc_auc": 0.982473544973545,
+      "brier": 0.029440705181863088,
+      "log_loss": 0.14174207256737434
+    },
+    "ci95_bootstrap": {
+      "accuracy": [
+        0.9385964912280702,
+        1.0
+      ],
+      "precision": [
+        1.0,
+        1.0
+      ],
+      "recall": [
+        0.8408323095823096,
+        1.0
+      ],
+      "f1": [
+        0.9135348583877995,
+        1.0
+      ],
+      "roc_auc": [
+        0.9519223605789697,
+        1.0
+      ],
+      "brier": [
+        0.00767905725980752,
+        0.05979635622417439
+      ],
+      "log_loss": [
+        0.034768133758524285,
+        0.30078785027929045
+      ]
+    },
+    "confusion": {
+      "tn": 72,
+      "fp": 0,
+      "fn": 3,
+      "tp": 39
+    },
+    "calibration": [
+      {
+        "bin": "(0.000, 0.000]",
+        "n": 12,
+        "mean_predicted": 3.3556494092768376e-06,
+        "observed_rate": 0.0
+      },
+      {
+        "bin": "(0.000, 0.000]",
+        "n": 11,
+        "mean_predicted": 1.6816648252179766e-05,
+        "observed_rate": 0.0
+      },
+      {
+        "bin": "(0.000, 0.000]",
+        "n": 11,
+        "mean_predicted": 0.00018928145526362966,
+        "observed_rate": 0.09090909090909091
+      },
+      {
+        "bin": "(0.000, 0.002]",
+        "n": 12,
+        "mean_predicted": 0.0008363376575113838,
+        "observed_rate": 0.0
+      },
+      {
+        "bin": "(0.002, 0.008]",
+        "n": 11,
+        "mean_predicted": 0.004051934413893139,
+        "observed_rate": 0.0
+      },
+      {
+        "bin": "(0.008, 0.113]",
+        "n": 11,
+        "mean_predicted": 0.03589966199018915,
+        "observed_rate": 0.09090909090909091
+      },
+      {
+        "bin": "(0.113, 0.914]",
+        "n": 12,
+        "mean_predicted": 0.43359129304746896,
+        "observed_rate": 0.5
+      },
+      {
+        "bin": "(0.914, 1.000]",
+        "n": 11,
+        "mean_predicted": 0.9909189870811925,
+        "observed_rate": 1.0
+      },
+      {
+        "bin": "(1.000, 1.000]",
+        "n": 11,
+        "mean_predicted": 0.999976132930237,
+        "observed_rate": 1.0
+      },
+      {
+        "bin": "(1.000, 1.000]",
+        "n": 12,
+        "mean_predicted": 0.9999999893133721,
+        "observed_rate": 1.0
+      }
+    ],
+    "slices": {}
+  },
+  "environment": {
+    "python": "3.12.13",
+    "sklearn": "1.9.1",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "platform": "macOS-27.0.1-arm64-arm-64bit"
+  },
+  "seconds": 30.3
+}
