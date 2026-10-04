@@ -1,0 +1,35 @@
+# Titanic (Kaggle "Titanic - Machine Learning from Disaster", train.csv).
+# Download train.csv into data/titanic/; it is not redistributed here.
+name: titanic
+data:
+  source: csv
+  path: data/titanic/train.csv
+  sha256: 7d118fef8b6ccf7f81111877bc388536f7b1e498a655e3d649d19aaa010e9f6f
+  target: Survived
+  positive_label: 1
+  id_column: PassengerId
+features:
+  engineered: [title, family_size, is_alone, cabin_known, fare_per_person]
+  numeric: [Age, Fare, SibSp, Parch, family_size, fare_per_person]
+  categorical: [Pclass, Sex, Embarked, title, is_alone, cabin_known]
+split: {test_size: 0.2, seed: 42}
+cv: {outer_folds: 5, inner_folds: 5, seed: 42}
+selection_metric: roc_auc
+models:   # simplest first: ties go to the earlier entry
+  baseline_majority: {}
+  logistic_regression:
+    grid: {C: [0.03, 0.1, 0.3, 1.0, 3.0]}
+  svc_rbf:
+    grid: {C: [0.3, 1.0, 3.0], gamma: [scale, 0.03]}
+  random_forest:
+    grid: {n_estimators: [300], max_depth: [4, 6, 8], min_samples_leaf: [1, 3]}
+  hist_gradient_boosting:
+    grid: {learning_rate: [0.03, 0.1], max_depth: [3, 5], max_iter: [200], l2_regularization: [0.0, 1.0]}
+evaluation:
+  threshold: 0.5
+  bootstrap: 2000
+  calibration_bins: 10
+  slices:
+    Sex: null
+    Pclass: null
+    Age: [0, 13, 18, 40, 60, 120]

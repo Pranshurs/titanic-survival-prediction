@@ -1,133 +1,158 @@
-Ah! Now I get you — you want a truly professional GitHub-ready README like you’d see in polished open-source repos:
-	•	Subheadings with / style or slashes
-	•	Sections clearly divided
-	•	Clean spacing and modern “pro” feel
-	•	Emphasis on structure and readability
+# tabml: a reproducible tabular ML pipeline (Titanic worked example)
 
-I’ll rewrite your README fully in that style. Copy-paste ready for your README.md:
+[![tests](https://github.com/Pranshurs/titanic-survival-prediction/actions/workflows/ci.yml/badge.svg)](https://github.com/Pranshurs/titanic-survival-prediction/actions/workflows/ci.yml)
 
-⸻
+**Origin.** This repository began in October 2025 as an early learning project: a
+single-script logistic regression on Kaggle's Titanic data. In October 2026 it was rebuilt
+into a reference implementation for tabular binary classification. The history is kept;
+the original code is in the commits before `3acf2db`.
 
+The aim is a pipeline that another engineer can trust and reuse:
+- **Configured, not hard-coded.** One YAML file defines a dataset, its features, the
+  candidate models and the evaluation.
+- **Leak-free evaluation.** Models are compared fairly, and the held-out test set is
+  scored exactly once.
+- **Reproducible runs.** Every run records what was trained, on which data, with which
+  code.
 
-# 🚢 Titanic Survival Prediction
+Titanic is only the worked example. `configs/breast_cancer.yaml` runs the same code on a
+different dataset, and CI runs it too.
 
-[![Python](https://img.shields.io/badge/python-3.10-blue)](https://www.python.org/)
-[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com/)
-[![GitHub](https://img.shields.io/badge/github-complete-green.svg)](https://github.com/)
+## How a run works
 
-> Modular, production-style ML pipeline to predict Titanic passenger survival  
-> Fully containerized using Docker and structured for reproducibility in GitHub Codespaces
+```
+data (CSV or sklearn bundle) ── schema checks, sha256 ──► stratified train/test split (seeded)
+                                                              │ test rows set aside
+train rows ──► for each model: nested CV
+                 inner K-fold grid search (tuning) inside each outer fold
+                 outer K-fold scores (comparison)
+           ──► pick best mean outer ROC AUC ──► re-tune on all train rows, refit
+           ──► score the test rows once ──► model.joblib + metadata.json + report.md
+```
 
----
+**Pipeline.** One sklearn `Pipeline` is persisted and later used for prediction, so
+serving can't drift from what was evaluated. It has three stages:
+1. Engineered features: named, stateless, row-wise transforms.
+2. A `ColumnTransformer`:
+   - numeric columns get median imputation with missing-value indicators, then scaling;
+   - categorical columns get one-hot encoding, with an explicit "missing" category and
+     unknown categories ignored.
+3. The model.
 
-## / Project Structure
+**Candidates.**
+- majority-class baseline
+- logistic regression
+- RBF SVM
+- random forest
+- histogram gradient boosting
 
-titanic-survival-prediction/
-│
-├── titanic_survival/
-│   ├── data/                # CSV datasets (train.csv, test.csv, gender_submission.csv)
-│   ├── models/              # Saved models & submission.csv
-│   └── src/
-│       ├── data/            # Data loading scripts
-│       ├── features/        # Feature preprocessing
-│       ├── models/          # Training & prediction scripts
-│       └── utils/           # Helper functions
-│
-├── scripts/
-│   └── run_pipeline.sh      # Full training pipeline runner
-├── config.yaml              # Paths & parameters
-├── Dockerfile               # Docker container setup
-├── requirements.txt         # Python dependencies
-└── README.md                # Documentation
+**Metrics.**
+- **Reported for every run:** accuracy, precision, recall, F1, ROC AUC, Brier score and
+  log loss, each with a 95% bootstrap CI on the test set.
+- **Also produced:** the confusion matrix, a calibration table, and slices by configured
+  columns.
 
----
+**Recorded per run.** Each run writes a metadata file with:
+- the config hash and code commit
+- the data sha256
+- hashes of the train and test indices
+- library versions
+- the hyperparameters chosen in every outer fold
 
-## / Installation & Setup
+The runs are deterministic. Re-running gives identical numbers (tested), and the Docker
+image (Linux) reproduced the macOS run's selected model and test metrics exactly.
 
-### 1️⃣ Clone Repository
+## Results on Titanic
+
+These come from Kaggle `train.csv` (891 rows, sha256 `7d118fef…`). There are 712 training
+rows and 179 test rows, split with seed 42. The full report is in
+[`reports/titanic/report.md`](reports/titanic/report.md), with
+[`metadata.json`](reports/titanic/metadata.json) alongside it.
+
+**Model comparison:** nested CV on the 712 training rows (5 outer × 5 inner folds). Values
+are mean ± standard deviation across the outer folds.
+
+| Model | ROC AUC | Accuracy | Brier |
+|---|---|---|---|
+| majority baseline | 0.500 ± 0.000 | 0.617 ± 0.003 | 0.383 |
+| logistic regression | 0.863 ± 0.030 | 0.824 ± 0.029 | 0.136 |
+| RBF SVM | 0.851 ± 0.040 | 0.819 ± 0.027 | 0.139 |
+| random forest | 0.875 ± 0.025 | 0.830 ± 0.017 | 0.123 |
+| **hist gradient boosting** (selected) | **0.884 ± 0.029** | 0.827 ± 0.031 | 0.122 |
+
+The differences between the four real models are within about one standard deviation.
+On this little data, "gradient boosting won" is a weak statement.
+
+**Held-out test set:** 179 rows, scored once after selection. CIs are 95% bootstrap.
+
+| Accuracy | Precision | Recall | F1 | ROC AUC | Brier |
+|---|---|---|---|---|---|
+| 0.804 [0.737, 0.860] | 0.793 [0.678, 0.893] | 0.667 [0.547, 0.776] | 0.724 [0.626, 0.809] | 0.845 [0.771, 0.909] | 0.141 [0.109, 0.177] |
+
+The confusion matrix is TP 46 · FP 12 · FN 23 · TN 98.
+
+The test ROC AUC (0.845) is below the CV estimate (0.884), but within the bootstrap
+interval. The earlier version of this project reported 0.799 accuracy from a single split
+with no tuning. This run isn't directly comparable to that: it uses a different split and
+a different procedure.
+
+**Slices** (report only):
+- **By sex:** the model predicts survival for 75% of women and 10% of men. Its recall for
+  men who survived is 0.25.
+- **By class:** recall for third class is 0.42.
+
+These numbers describe a model of a 1912 evacuation ("women and children first"). They
+reflect the historical outcome the data records. They aren't evidence about fairness or
+about any present-day decision system, and with slices this small (several under 30 rows)
+they shouldn't be over-read.
+
+## Use it
+
 ```bash
-git clone https://github.com/<your-username>/titanic-survival-prediction.git
-cd titanic-survival-prediction
+pip install -e ".[dev]"
+# Titanic: download train.csv from https://www.kaggle.com/c/titanic/data into data/titanic/
+tabml train -c configs/titanic.yaml          # writes artifacts/titanic/<run_id>/ and artifacts/titanic/LATEST
+tabml predict -m artifacts/titanic -i data/titanic/test.csv -o predictions.csv
+tabml train -c configs/breast_cancer.yaml    # no download needed
+pytest -q                                    # synthetic data, no Kaggle files needed
+pytest -m titanic                            # the real Titanic run, if the CSV is present
+```
 
-2️⃣ Add Dataset
+To run it with Docker:
 
-Download from Kaggle Titanic and place in:
+```bash
+docker build -t tabml .
+docker run --rm --network none -v "$PWD/data/titanic:/app/data/titanic:ro" -v "$PWD/out:/out" tabml train -c configs/titanic.yaml --out /out
+```
 
-titanic_survival/data/
-├── train.csv
-├── test.csv
-└── gender_submission.csv
+`requirements.txt` pins the exact versions behind the committed reports. `pyproject.toml`
+sets the minimum versions.
 
-3️⃣ Install Dependencies
+## Use it on your own table
 
-If running locally:
+1. Copy `configs/titanic.yaml`, then set:
+   - `data`: the path, the target, `positive_label` and an optional `id_column`;
+   - the `numeric` and `categorical` feature columns;
+   - `models`, with their grids;
+   - `evaluation.slices`.
+2. If you need a derived feature, add a stateless function to `src/tabml/features.py` with
+   `@register("ColumnItNeeds", ...)`, and list its name under `features.engineered`.
+   The function must add a column named after itself.
+3. Run `tabml train -c your.yaml`.
 
-pip install -r requirements.txt
+The tests guard what makes results trustworthy:
+- **Leakage test.** It corrupts every feature of the test rows and requires model
+  selection and tuning to be unchanged. Two deliberately leaky variants of the training
+  code fail it.
+- **Determinism.**
+- **Input validation.**
+- **Prediction round trip.**
 
+## Limitations
 
-⸻
-
-/ Docker Usage (Recommended)
-
-Build Docker Image
-
-docker build -t titanic-survival .
-
-Run Full Pipeline
-
-docker run --rm -it -v $(pwd):/app titanic-survival
-
-✅ This executes:
-	•	Load & preprocess data
-	•	Train model
-	•	Save model.pkl to titanic_survival/models/
-
-⸻
-
-/ Training (Manual)
-
-python -m titanic_survival.src.models.train
-
-Expected Output:
-
-✅ Model trained with accuracy: ~0.7989
-💾 Model saved at titanic_survival/models/model.pkl
-
-
-⸻
-
-/ Prediction & Kaggle Submission
-
-python -m titanic_survival.src.models.predict
-
-Output:
-titanic_survival/models/submission.csv ready for Kaggle submission.
-
-⸻
-
-/ Model Details
-
-Component	Description
-Algorithm	Logistic Regression / Random Forest
-Accuracy	~79.8% on training data
-Framework	Scikit-learn
-Containerized	Docker
-Language	Python 3.10+
-
-
-⸻
-
-/ Future Improvements
-	•	Hyperparameter tuning (GridSearchCV)
-	•	Advanced feature engineering (titles, family size, cabin info)
-	•	Model evaluation & visualization (confusion matrix, ROC curve)
-	•	REST API deployment (FastAPI) / Web app (Streamlit)
-	•	MLflow experiment tracking
-
-⸻
-
-/ Author
-
-Pranshu Raj – AI & Data Science Enthusiast
-
----
+- Binary classification only. There's no time-aware splitting, so don't use it for
+  temporal data as-is.
+- The 0.5 threshold is fixed in the config; there's no threshold optimisation.
+- Probabilities aren't recalibrated. The calibration table shows how far off they are.
+- Titanic is small: 179 test rows give wide intervals.
+- The Kaggle data isn't redistributed here.

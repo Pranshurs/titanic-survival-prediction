@@ -1,0 +1,29 @@
+# Second worked example: sklearn's bundled Wisconsin breast cancer data (no download).
+# Shows the same pipeline on a different table with nothing but a new config.
+# Positive class = malignant (label 0 in sklearn's encoding).
+name: breast_cancer
+data:
+  source: sklearn
+  dataset: breast_cancer
+  target: target
+  positive_label: 0
+features:
+  numeric: [mean radius, mean texture, mean perimeter, mean area, mean smoothness, mean compactness,
+            mean concavity, mean concave points, mean symmetry, mean fractal dimension,
+            worst radius, worst texture, worst perimeter, worst area, worst smoothness,
+            worst compactness, worst concavity, worst concave points, worst symmetry,
+            worst fractal dimension]
+split: {test_size: 0.2, seed: 7}
+cv: {outer_folds: 5, inner_folds: 3, seed: 7}
+selection_metric: roc_auc
+models:
+  baseline_majority: {}
+  logistic_regression:
+    grid: {C: [0.1, 1.0, 10.0]}
+  random_forest:
+    grid: {n_estimators: [200], max_depth: [4, null]}
+  hist_gradient_boosting:
+    grid: {learning_rate: [0.1], max_depth: [3, null]}
+evaluation:
+  threshold: 0.5
+  bootstrap: 1000
